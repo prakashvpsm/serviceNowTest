@@ -10,8 +10,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Echo instance name for sanity
-      run: echo "$NOW_SOURCE_INSTANCE"
+    - name: 🔍 Probe NOW_SOURCE_INSTANCE
+      run: |
+          if [ -z "$NOW_SOURCE_INSTANCE" ]; then
+          echo "❌ NOW_SOURCE_INSTANCE is NOT set"
+          exit 1
+          fi
+          echo "✅ NOW_SOURCE_INSTANCE length: ${#NOW_SOURCE_INSTANCE}"
+          echo "✅ NOW_SOURCE_INSTANCE prefix: ${NOW_SOURCE_INSTANCE:0:3}***"
+          nslookup "$NOW_SOURCE_INSTANCE" || true    # DNS test
 
     # 1. Apply current branch to your DEV instance
     - name: Apply changes to DEV
