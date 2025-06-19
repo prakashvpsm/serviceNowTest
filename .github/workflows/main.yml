@@ -18,7 +18,7 @@ jobs:
         env:
           nowUsername:       "gitHubUser"
           nowPassword:       "Password@123"
-          nowSourceInstance: "dev296293.service-now.com"
+          nowSourceInstance: "dev296293"
           appSysID:          "474f90ddc38ae6107152d8ec050131b5"
 
       - name: Publish app
@@ -30,7 +30,7 @@ jobs:
         env:
           nowUsername:       "gitHubUser"
           nowPassword:       "Password@123"
-          nowSourceInstance: "dev296293.service-now.com"
+          nowSourceInstance: "dev296293"
           appSysID:          "474f90ddc38ae6107152d8ec050131b5"
 
   test-deploy:
@@ -44,5 +44,5 @@ jobs:
         env:
           nowUsername:       "gitHubUser"
           nowPassword:       "Password@123"
-          nowInstallInstance: "dev296293.service-now.com"      
+          nowInstallInstance: "dev296293"      
           appSysID:          "474f90ddc38ae6107152d8ec050131b5"
