@@ -1,32 +1,48 @@
-name: ServiceNow CI-CD
+name: ServiceNow CI/CD  (hard-coded demo)
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
+
   dev-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: 🔍 Probe NOW_SOURCE_INSTANCE
-      run: |
-          if [ -z "$NOW_SOURCE_INSTANCE" ]; then
-          echo "❌ NOW_SOURCE_INSTANCE is NOT set"
-          exit 1
-          fi
-          echo "✅ NOW_SOURCE_INSTANCE length: ${#NOW_SOURCE_INSTANCE}"
-          echo "✅ NOW_SOURCE_INSTANCE prefix: ${NOW_SOURCE_INSTANCE:0:3}***"
-          nslookup "$NOW_SOURCE_INSTANCE" || true    # DNS test
+      - name: Apply changes to DEV
+        uses: ServiceNow/sncicd-apply-changes@2.0.0
+        env:
+          nowUsername:       "gitHubUser"
+          nowPassword:       "Password@123"
+          nowSourceInstance: "dev296293.service-now.com"
+          appSysID:          "474f90ddc38ae6107152d8ec050131b5"
 
-    # 1. Apply current branch to your DEV instance
-    - name: Apply changes to DEV
-      uses: ServiceNow/sncicd-apply-changes@2.0.0
-      env:
-        nowUsername: ${{ secrets.NOW_USERNAME }}
-        nowPassword: ${{ secrets.NOW_PASSWORD }}
-        nowSourceInstance: ${{ secrets.NOW_SOURCE_INSTANCE }}
-        appSysID: ${{ secrets.APP_SYS_ID }}
+      - name: Publish app
+        id: publish
+        uses: ServiceNow/sncicd-publish-app@2.0.1
+        with:
+          versionTemplate: "1.${{ github.run_number }}"
+          versionFormat: template
+        env:
+          nowUsername:       "gitHubUser"
+          nowPassword:       "Password@123"
+          nowSourceInstance: "dev296293.service-now.com"
+          appSysID:          "474f90ddc38ae6107152d8ec050131b5"
 
-    
+  test-deploy:
+    needs: dev-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install app on TEST
+        uses: ServiceNow/sncicd-install-app@2.0.0
+        with:
+          version: ${{ needs.dev-build.outputs.publish_newVersion }}
+        env:
+          nowUsername:       "gitHubUser"
+          nowPassword:       "Password@123"
+          nowInstallInstance: "dev296293.service-now.com"      
+          appSysID:          "474f90ddc38ae6107152d8ec050131b5"
