@@ -12,7 +12,7 @@ jobs:
 
     # 1. Apply current branch to your DEV instance
     - name: Apply changes to DEV
-      uses: ServiceNow/sncicd-apply-changes@v2
+      uses: ServiceNow/sncicd-apply-changes@2.0.0
       env:
         nowUsername: ${{ secrets.NOW_USERNAME }}
         nowPassword: ${{ secrets.NOW_PASSWORD }}
@@ -24,7 +24,7 @@ jobs:
     # 3. Publish the app to the App Repo
     - name: Publish app
       id: publish
-      uses: ServiceNow/sncicd-publish-app@v2
+      uses: ServiceNow/sncicd-publish-app@2.0.1
       with:
         versionTemplate: "1.${{ github.run_number }}"
         versionFormat: template
@@ -50,7 +50,7 @@ jobs:
 
     # 4. Install the freshly-published version on TEST
     - name: Install app on TEST
-      uses: ServiceNow/sncicd-install-app@v2
+      uses: ServiceNow/sncicd-install-app@v2.0.0
       with:
         version: ${{ needs.dev-build.outputs.publish_newVersion }}
       env:
