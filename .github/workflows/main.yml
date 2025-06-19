@@ -10,6 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Echo instance name for sanity
+      run: echo "$NOW_SOURCE_INSTANCE"
+
     # 1. Apply current branch to your DEV instance
     - name: Apply changes to DEV
       uses: ServiceNow/sncicd-apply-changes@2.0.0
